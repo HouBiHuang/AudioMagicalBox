@@ -1,12 +1,10 @@
 import sounddevice as sd
 import numpy as np
 import scipy.signal
-import timeit
 import python_speech_features
 import tensorflow as tf
 from PyQt5.QtCore import QTime
 import librosa
-import scipy.fftpack as sf
 #import RPi.GPIO as GPIO
 
 # Parameters
@@ -20,7 +18,7 @@ sample_rate = 48000 #取樣率(依MIC不同而改變)
 resample_rate = 8000 #重整後的取樣率(符合MODEL)
 num_channels = 1 #音訊深度
 num_mfcc = 23 #回傳mfcc的量
-model_path = './tflite/recording.tflite'
+model_path = './tflite/recording23.tflite'
 words = ['ㄏㄧㄡ', 'ㄟ', '吼', '啦', '嗯', '的一個', '的這個', '的那個', '著', '那', '那那個', '阿']#答案對應到的字詞
 
 s = 0 #秒
@@ -92,7 +90,7 @@ def sd_callback(rec, frames, time, status):
     #window[2000:4000] = window[4000:6000]
     #window[4000:6000] = window[6000:]
     #window[6000:] = rec
-    if np.sum(S) > 1000:
+    if np.sum(S) > 5000:
         # Compute features
         mfccs = python_speech_features.base.mfcc(window, #輸入訊號
                                             samplerate=new_fs, #取樣率
@@ -121,7 +119,7 @@ def sd_callback(rec, frames, time, status):
         list_val_max = max(val) #取得最大值
         list_val_maxIndex = val.index(max(val)) #取得最大值的索引  
         
-        if(list_val_max >= 0.3):#如果預測值>=0.3
+        if(list_val_max >= 3):#如果預測值>=0.3
             print(words[list_val_maxIndex])#輸出相對應的字詞
             print("MAX:" + str(list_val_max))#輸出預測值當中最大的值
             print(str(h) + "時" + str(m) + "分" + "{:.1f}秒".format(s))
