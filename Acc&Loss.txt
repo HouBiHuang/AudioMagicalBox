@@ -1,0 +1,72 @@
+recording16.h5:
+traing_loss: 0.1571 - train_acc: 0.9549 
+val_loss: 0.3223 - val_acc: 0.9167
+test_loss: 0.2464 - test_acc: 0.9444
+
+model = models.Sequential()
+model.add(layers.Conv2D(32, (2, 2), activation='relu',input_shape=sample_shape))
+model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+
+#model.add(layers.Conv2D(32, (2, 2), activation='relu'))
+#model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+
+model.add(layers.Conv2D(64, (2, 2), activation='relu'))#64
+model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+model.add(layers.Dropout(0.5))
+
+# Classifier
+model.add(layers.Flatten())
+model.add(layers.Dense(64, activation='relu'))#64
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(12, activation='softmax'))
+# Display model
+model.summary()
+
+from tensorflow.keras import optimizers
+# Add training parameters to model
+model.compile(loss='sparse_categorical_crossentropy', 
+              optimizer='adam',    #'adam'
+              metrics=['acc'])
+
+# Train
+history = model.fit(x_train, 
+                    y_train, 
+                    epochs=100,
+                    batch_size=20,
+                    validation_data=(x_val, y_val))
+recording23.h5:
+train_loss: 0.1634 - train_acc: 0.9583 
+val_loss: 0.2834 - val_acc: 0.8611
+test_loss: 0.2395 - test_acc: 0.9444
+
+model = models.Sequential()
+model.add(layers.Conv2D(32, (2, 2), activation='relu',input_shape=sample_shape))
+model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+
+#model.add(layers.Conv2D(32, (2, 2), activation='relu'))
+#model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+
+model.add(layers.Conv2D(64, (2, 2), activation='relu'))#64
+model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+model.add(layers.Dropout(0.5))
+
+# Classifier
+model.add(layers.Flatten())
+model.add(layers.Dense(64, activation='relu'))#64
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(12, activation='softmax'))
+# Display model
+model.summary()
+
+from tensorflow.keras import optimizers
+# Add training parameters to model
+model.compile(loss='sparse_categorical_crossentropy', 
+              optimizer='adam',    #'adam'
+              metrics=['acc'])
+
+# Train
+history = model.fit(x_train, 
+                    y_train, 
+                    epochs=100,
+                    batch_size=20,
+                    validation_data=(x_val, y_val))
