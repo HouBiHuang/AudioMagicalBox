@@ -5,26 +5,6 @@ import python_speech_features
 import tensorflow as tf
 from PyQt5.QtCore import QTime
 import librosa
-#import RPi.GPIO as GPIO
-
-# Parameters
-num_mfcc = 23 #回傳mfcc的量
-model_path = './recording23.tflite'
-words = ['ㄏㄧㄡ', 'ㄟ', '吼', '啦', '嗯', '的一個', '的這個', '的那個', '著', '那', '那那個', '阿']#答案對應到的字詞
-data = []
-# Sliding window
-window = np.zeros(8000)#取樣音頻數據變數
-
-# GPIO 
-#GPIO.setwarnings(False)
-#GPIO.setmode(GPIO.BOARD)
-#GPIO.setup(8, GPIO.OUT, initial=GPIO.LOW)
-
-# Load model (interpreter)
-interpreter = tf.lite.Interpreter(model_path)
-interpreter.allocate_tensors()
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
 
 # This gets called every 0.5 seconds
 def sound(window,s,m):
@@ -64,7 +44,21 @@ def sound(window,s,m):
             data.append(str(m) + "分" + str(s) + "秒，出現:" + str(words[list_val_maxIndex]) + "，預測值:" + str(list_val_max))
          
 #main
-y, sr = librosa.load("./recording.wav",sr=8000,duration=60) #載入音檔
+# Parameters
+num_mfcc = 23 #回傳mfcc的量
+model_path = './recording23.tflite'
+words = ['ㄏㄧㄡ', 'ㄟ', '吼', '啦', '嗯', '的一個', '的這個', '的那個', '著', '那', '那那個', '阿']#答案對應到的字詞
+data = []
+# Sliding window
+window = np.zeros(8000)#取樣音頻數據變數
+
+# Load model (interpreter)
+interpreter = tf.lite.Interpreter(model_path)
+interpreter.allocate_tensors()
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+
+y, sr = librosa.load("./chen.wav",sr=8000,duration=180) #載入音檔
 start = 0 #一開始的索引值
 end = 4000 #一開始的索引值
 s = 0.5 #秒
@@ -79,7 +73,7 @@ while True:
         s = 0
         m = m + 1
     sound(window,s,m) #呼叫sound()
-    if(end == 480000): #如果移動到最後，break
+    if(end == 1440000): #如果移動到最後，break
         break
     
 for i in range(len(data)):
