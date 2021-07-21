@@ -49,6 +49,16 @@ num_mfcc = 23 #回傳mfcc的量
 model_path = './recording23.tflite'
 words = ['ㄏㄧㄡ', 'ㄟ', '吼', '啦', '嗯', '的一個', '的這個', '的那個', '著', '那', '那那個', '阿']#答案對應到的字詞
 data = []
+start = 0 #一開始的索引值
+end = 4000 #一開始的索引值
+s = 0.5 #秒
+m = 0 #分
+duration = 180 #讀音檔的總時間
+sample_rate = 8000 #取樣率
+
+#載入音檔
+y, sr = librosa.load("./chen.wav",sr=sample_rate,duration=duration) 
+
 # Sliding window
 window = np.zeros(8000)#取樣音頻數據變數
 
@@ -58,11 +68,7 @@ interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
-y, sr = librosa.load("./chen.wav",sr=8000,duration=180) #載入音檔
-start = 0 #一開始的索引值
-end = 4000 #一開始的索引值
-s = 0.5 #秒
-m = 0 #分
+
 while True:
     window[0:4000] = y[start:end] #把音訊載入window
     start = start + 4000 #向後移動
