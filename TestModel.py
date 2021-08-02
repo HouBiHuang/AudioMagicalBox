@@ -40,18 +40,21 @@ def sound(window,s,m):
         list_val_max = max(val) #取得最大值
         list_val_maxIndex = val.index(max(val)) #取得最大值的索引  
         
-        if list_val_maxIndex == 2:
-            data.append(str(m) + "分" + str(s) + "秒，出現:" + str(words[list_val_maxIndex]) + "，預測值:" + str(list_val_max))
+        if list_val_max > 0.3:
+            if list_val_maxIndex == 3:
+                data_ho.append(str(m) + "分" + str(s) + "秒，出現:" + str(words[list_val_maxIndex]) + "，預測值:" + str(list_val_max))
+        data.append(str(m) + "分" + str(s) + "秒，出現:" + str(words[list_val_maxIndex]) + "，預測值:" + str(list_val_max))
          
 #main
 # Parameters
 num_mfcc = 23 #回傳mfcc的量
-model_path = './recording23.tflite'
-words = ['ㄏㄧㄡ', 'ㄟ', '吼', '啦', '嗯', '的一個', '的這個', '的那個', '著', '那', '那那個', '阿']#答案對應到的字詞
+model_path = './appendEnergyTT.tflite'
+words = ['backgroundNoise', 'ㄏㄧㄡ', 'ㄟ', '吼', '啦', '嗯', '的一個', '的這個', '的那個', '著', '那', '那那個', '阿']#答案對應到的字詞
 data = []
+data_ho = []
 start = 0 #一開始的索引值
-end = 4000 #一開始的索引值
-s = 0.5 #秒
+end = 2000 #一開始的索引值
+s = 0 #秒
 m = 0 #分
 duration = 180 #讀音檔的總時間
 sample_rate = 8000 #取樣率
@@ -70,21 +73,26 @@ output_details = interpreter.get_output_details()
 
 
 while True:
-    window[0:4000] = y[start:end] #把音訊載入window
-    start = start + 4000 #向後移動
-    end = end + 4000 #向後移動
-    window[4000:] = y[start:end] #把音訊載入window
-    s = s + 0.5 #增加秒數
+    s = s + 0.25 #增加秒數
     if(s == 60): #60秒 轉成 1分
         s = 0
         m = m + 1
+
+    #window[:4000] = window[4000:] #把音訊載入window
+    #window[4000:] = y[start:end] #把音訊載入window
+    window[0:2000] = window[2000:4000]
+    window[2000:4000] = window[4000:6000]
+    window[4000:6000] = window[6000:8000]
+    window[6000:8000] = y[start:end]
     sound(window,s,m) #呼叫sound()
-    if(end == 1440000): #如果移動到最後，break
+
+    if(end == (8000 * duration)): #如果移動到最後，break
         break
+    
+    start = start + 2000 #向後移動
+    end = end + 2000 #向後移動    
+    
     
 for i in range(len(data)):
         print(data[i])
-    
-    
-    
     
