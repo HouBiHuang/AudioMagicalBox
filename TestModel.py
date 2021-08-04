@@ -22,7 +22,7 @@ def sound(window,s,m):
                                             nfft=2048,#FFT大小
                                             preemph=0.0,#不用預強化濾波器
                                             ceplifter=0,#ROBUST
-                                            appendEnergy=True,#係數0的話對被替代成總音框能量的對數
+                                            appendEnergy=True,#True的話，第0個倒頻譜係數被替代成總音框能量的對數
                                             winfunc=np.hanning)#hanning window
         mfccs = mfccs.transpose()
         
