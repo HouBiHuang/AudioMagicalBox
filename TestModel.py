@@ -5,6 +5,7 @@ import python_speech_features
 import tensorflow as tf
 from PyQt5.QtCore import QTime
 import librosa
+import random
 
 # This gets called every 0.5 seconds
 def sound(window,s,m):
@@ -80,10 +81,9 @@ while True:
 
     #window[:4000] = window[4000:] #把音訊載入window
     #window[4000:] = y[start:end] #把音訊載入window
-    window[0:2000] = window[2000:4000]
-    window[2000:4000] = window[4000:6000]
-    window[4000:6000] = window[6000:8000]
-    window[6000:8000] = y[start:end]
+    window[0:2000] = y[start:end]
+    for i in range(2000,8000):
+        window[i] = random.uniform(0.0099487305, -0.0093688965)  
     sound(window,s,m) #呼叫sound()
 
     if(end == (8000 * duration)): #如果移動到最後，break
@@ -95,4 +95,3 @@ while True:
     
 for i in range(len(data)):
         print(data[i])
-    
