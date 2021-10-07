@@ -43,7 +43,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def sparse_warp(mel_spectrogram, time_warping_para=80):
+def sparse_warp(mel_spectrogram, time_warping_para=40):
     """Spec augmentation Calculation Function.
 
     'SpecAugment' have 3 steps for audio data augmentation.
@@ -88,7 +88,7 @@ def sparse_warp(mel_spectrogram, time_warping_para=80):
     return warped_image
 
 
-def frequency_masking(mel_spectrogram, v, frequency_masking_para=27, frequency_mask_num=2):
+def frequency_masking(mel_spectrogram, v, frequency_masking_para=6, frequency_mask_num=1):
     """Spec augmentation Calculation Function.
 
     'SpecAugment' have 3 steps for audio data augmentation.
@@ -123,7 +123,7 @@ def frequency_masking(mel_spectrogram, v, frequency_masking_para=27, frequency_m
     return tf.cast(mel_spectrogram, dtype=tf.float32)
 
 
-def time_masking(mel_spectrogram, tau, time_masking_para=100, time_mask_num=1):
+def time_masking(mel_spectrogram, tau, time_masking_para=70, time_mask_num=1):
     """Spec augmentation Calculation Function.
 
     'SpecAugment' have 3 steps for audio data augmentation.
@@ -163,11 +163,11 @@ def spec_augment(mel_spectrogram):
     v = mel_spectrogram.shape[0]
     tau = mel_spectrogram.shape[1]
 
-    #warped_mel_spectrogram = sparse_warp(mel_spectrogram)
+    warped_mel_spectrogram = sparse_warp(mel_spectrogram)
 
-    #warped_frequency_spectrogram = frequency_masking(warped_mel_spectrogram, v=v)
+    warped_frequency_spectrogram = frequency_masking(warped_mel_spectrogram, v=v)
 
-    warped_frequency_time_sepctrogram = time_masking(mel_spectrogram, tau=tau)
+    warped_frequency_time_sepctrogram = time_masking(warped_frequency_spectrogram, tau=tau)
 
     return warped_frequency_time_sepctrogram
 
