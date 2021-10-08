@@ -24,7 +24,8 @@ time_warping_para = args.time_warp_para
 time_masking_para = args.frequency_mask_para
 frequency_masking_para = args.time_mask_para
 masking_line_number = args.masking_line_number
-words = ["的這個"]#"ㄏㄧㄡ","ㄟ","他","好","你","吼","我","那","那那個","的","的一個","的那個","的這個","阿","啦","著","嗯"]
+
+words = ["ㄏㄧㄡ","ㄟ","他","好","你","吼","我","那","那那個","的","的一個","的那個","的這個","阿","啦","著","嗯"]
 
 if __name__ == "__main__":
     for word in words:

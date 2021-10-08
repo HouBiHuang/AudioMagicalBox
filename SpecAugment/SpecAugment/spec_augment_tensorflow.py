@@ -88,7 +88,7 @@ def sparse_warp(mel_spectrogram, time_warping_para=40):
     return warped_image
 
 
-def frequency_masking(mel_spectrogram, v, frequency_masking_para=6, frequency_mask_num=1):
+def frequency_masking(mel_spectrogram, v, frequency_masking_para=3, frequency_mask_num=1):
     """Spec augmentation Calculation Function.
 
     'SpecAugment' have 3 steps for audio data augmentation.
@@ -123,7 +123,7 @@ def frequency_masking(mel_spectrogram, v, frequency_masking_para=6, frequency_ma
     return tf.cast(mel_spectrogram, dtype=tf.float32)
 
 
-def time_masking(mel_spectrogram, tau, time_masking_para=70, time_mask_num=1):
+def time_masking(mel_spectrogram, tau, time_masking_para=50, time_mask_num=1):
     """Spec augmentation Calculation Function.
 
     'SpecAugment' have 3 steps for audio data augmentation.
