@@ -41,9 +41,10 @@ import tensorflow as tf
 from tensorflow_addons.image import sparse_image_warp
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 
-def sparse_warp(mel_spectrogram, time_warping_para=40):
+def sparse_warp(mel_spectrogram, time_warping_para=2):
     """Spec augmentation Calculation Function.
 
     'SpecAugment' have 3 steps for audio data augmentation.
@@ -58,7 +59,8 @@ def sparse_warp(mel_spectrogram, time_warping_para=40):
     # Returns
       mel_spectrogram(numpy array): warped and masked mel spectrogram.
     """
-
+    
+    """
     fbank_size = tf.shape(mel_spectrogram)
     n, v = fbank_size[1], fbank_size[2]
 
@@ -86,9 +88,27 @@ def sparse_warp(mel_spectrogram, time_warping_para=40):
                                         source_control_point_locations,
                                         dest_control_point_locations)
     return warped_image
+    """
+    
+        
+    v, tau = mel_spectrogram.shape[1], mel_spectrogram.shape[2]
+        
+    horiz_line_thru_ctr = mel_spectrogram[0][v//2]
+    
+    random_pt = horiz_line_thru_ctr[random.randrange(time_warping_para, tau - time_warping_para)] # random point along the horizontal/time axis
+    w = np.random.uniform((-time_warping_para), time_warping_para) # distance
+        
+    # Source Points
+    src_points = [[[v//2, random_pt[0]]]]
+        
+    # Destination Points
+    dest_points = [[[v//2, random_pt[0] + w]]]
+        
+    mel_spectrogram, _ = sparse_image_warp(mel_spectrogram, src_points, dest_points, num_boundary_points=2)
+    
+    return mel_spectrogram
 
-
-def frequency_masking(mel_spectrogram, v, frequency_masking_para=3, frequency_mask_num=1):
+def time_masking(mel_spectrogram, tau, time_masking_para=3, time_mask_num=1):
     """Spec augmentation Calculation Function.
 
     'SpecAugment' have 3 steps for audio data augmentation.
@@ -105,25 +125,25 @@ def frequency_masking(mel_spectrogram, v, frequency_masking_para=3, frequency_ma
     # Returns
       mel_spectrogram(numpy array): warped and masked mel spectrogram.
     """
-    # Step 2 : Frequency masking
+    # Step 2 : time masking
     fbank_size = tf.shape(mel_spectrogram)
-    n, v = fbank_size[1], fbank_size[2]
+    n, tau = fbank_size[1], fbank_size[2]
 
-    for i in range(frequency_mask_num):
-        f = tf.random.uniform([], minval=0, maxval=frequency_masking_para, dtype=tf.int32)
-        v = tf.cast(v, dtype=tf.int32)
-        f0 = tf.random.uniform([], minval=0, maxval=v-f, dtype=tf.int32)
+    for i in range(time_mask_num):
+        t = tf.random.uniform([], minval=0, maxval=time_masking_para, dtype=tf.int32)
+        tau = tf.cast(tau, dtype=tf.int32)
+        t0 = tf.random.uniform([], minval=0, maxval=tau-t, dtype=tf.int32)
 
         # warped_mel_spectrogram[f0:f0 + f, :] = 0
-        mask = tf.concat((tf.ones(shape=(1, n, v - f0 - f, 1)),
-                          tf.zeros(shape=(1, n, f, 1)),
-                          tf.ones(shape=(1, n, f0, 1)),
+        mask = tf.concat((tf.ones(shape=(1, n, tau - t0 - t, 1)),
+                          tf.zeros(shape=(1, n, t, 1)),
+                          tf.ones(shape=(1, n, t0, 1)),
                           ), 2)
         mel_spectrogram = mel_spectrogram * mask
     return tf.cast(mel_spectrogram, dtype=tf.float32)
 
 
-def time_masking(mel_spectrogram, tau, time_masking_para=50, time_mask_num=1):
+def frequency_masking(mel_spectrogram, v, frequency_masking_para=50, frequency_mask_num=1):
     """Spec augmentation Calculation Function.
 
     'SpecAugment' have 3 steps for audio data augmentation.
@@ -141,17 +161,18 @@ def time_masking(mel_spectrogram, tau, time_masking_para=50, time_mask_num=1):
       mel_spectrogram(numpy array): warped and masked mel spectrogram.
     """
     fbank_size = tf.shape(mel_spectrogram)
-    n, v = fbank_size[1], fbank_size[2]
+    v, n = fbank_size[1], fbank_size[2]
 
-    # Step 3 : Time masking
-    for i in range(time_mask_num):
-        t = tf.random.uniform([], minval=0, maxval=time_masking_para, dtype=tf.int32)
-        t0 = tf.random.uniform([], minval=0, maxval=tau-t, dtype=tf.int32)
-
+    # Step 3 : frequency masking
+    for i in range(frequency_mask_num):
+        f = tf.random.uniform([], minval=0, maxval=frequency_masking_para, dtype=tf.int32)
+        print("f=" + str(f))
+        f0 = tf.random.uniform([], minval=0, maxval=v-f, dtype=tf.int32)
+        print("f0=" + str(f0))
         # mel_spectrogram[:, t0:t0 + t] = 0
-        mask = tf.concat((tf.ones(shape=(1, n-t0-t, v, 1)),
-                          tf.zeros(shape=(1, t, v, 1)),
-                          tf.ones(shape=(1, t0, v, 1)),
+        mask = tf.concat((tf.ones(shape=(1, v-f0-f, n, 1)),
+                          tf.zeros(shape=(1, f, n, 1)),
+                          tf.ones(shape=(1, f0, n, 1)),
                           ), 1)
         
         mel_spectrogram = mel_spectrogram * mask
@@ -163,13 +184,22 @@ def spec_augment(mel_spectrogram):
     v = mel_spectrogram.shape[0]
     tau = mel_spectrogram.shape[1]
 
+    # Reshape to [Batch_size, time, freq, 1] for sparse_image_warp func.
+    mel_spectrogram = np.reshape(mel_spectrogram, (-1, v, tau, 1))
+    
+    #時間扭曲
     warped_mel_spectrogram = sparse_warp(mel_spectrogram)
 
-    warped_frequency_spectrogram = frequency_masking(warped_mel_spectrogram, v=v)
+    #時間遮罩
+    warped_time_spectrogram = time_masking(warped_mel_spectrogram, tau=tau)
 
-    warped_frequency_time_sepctrogram = time_masking(warped_frequency_spectrogram, tau=tau)
+    #頻率遮罩
+    warped_time_frequency_sepctrogram = frequency_masking(warped_time_spectrogram, v=v)
 
-    return warped_frequency_time_sepctrogram
+    #重整shape到原本模樣
+    warped_time_frequency_sepctrogram = np.reshape(warped_time_frequency_sepctrogram, (v, tau))
+    
+    return warped_time_frequency_sepctrogram
 
 
 def visualization_spectrogram(mel_spectrogram, title):
@@ -186,7 +216,7 @@ def visualization_spectrogram(mel_spectrogram, title):
     #plt.tight_layout()
     #plt.show()
     fig, ax = plt.subplots()
-    S_dB = librosa.power_to_db(mel_spectrogram[0, :, :, 0], ref=np.max)
+    S_dB = librosa.power_to_db(mel_spectrogram[:, :], ref=np.max)
     img = librosa.display.specshow(S_dB, x_axis='time',
                              y_axis='mel', sr=16000,
                              fmax=16000, ax=ax)
@@ -210,7 +240,7 @@ def visualization_tensor_spectrogram(mel_spectrogram, title):
     #plt.tight_layout()
     #plt.show()
     fig, ax = plt.subplots()
-    S_dB = librosa.power_to_db(mel_spectrogram[0, :, :, 0], ref=np.max)
+    S_dB = librosa.power_to_db(mel_spectrogram[:, :], ref=np.max)
     img = librosa.display.specshow(S_dB, x_axis='time',
                              y_axis='mel', sr=16000,
                              fmax=16000, ax=ax)
