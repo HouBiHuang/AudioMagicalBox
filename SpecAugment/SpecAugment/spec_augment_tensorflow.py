@@ -10,7 +10,7 @@ import random
 def sparse_warp(mel_spectrogram, time_warping_para=2):         
     v, tau = mel_spectrogram.shape[1], mel_spectrogram.shape[2]
         
-    horiz_line_thru_ctr = mel_spectrogram[0][v//2] #取得梅爾頻譜圖中心點
+    horiz_line_thru_ctr = mel_spectrogram[0][v//2] #取得梅爾頻譜圖中心
     
     random_pt = horiz_line_thru_ctr[random.randrange(time_warping_para, tau - time_warping_para)] #沿著水平時間軸隨機取得一點
     w = np.random.uniform((-time_warping_para), time_warping_para) #距離
@@ -74,7 +74,7 @@ def spec_augment(mel_spectrogram):
     v = mel_spectrogram.shape[0]
     tau = mel_spectrogram.shape[1]
 
-    # Reshape to [Batch_size, time, freq, 1] for sparse_image_warp func.
+    # Reshape to [Batch_size, freq, time, 1] for sparse_image_warp func.
     mel_spectrogram = np.reshape(mel_spectrogram, (-1, v, tau, 1))
     
     #時間扭曲

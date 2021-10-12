@@ -1,18 +1,17 @@
 import librosa
-#from SpecAugment import spec_augment_tensorflow
 import SpecAugment.spec_augment_tensorflow
 import numpy as np
 from scipy.io import wavfile
 import importlib
 importlib.reload(SpecAugment.spec_augment_tensorflow)
 
-words = ["ㄏㄧㄡ"]#,"ㄟ","他","好","你","吼","我","那","那那個","的","的一個","的那個","的這個","阿","啦","著","嗯"]
+words = ["ㄏㄧㄡ","ㄟ","他","好","你","吼","我","那","那那個","的","的一個","的那個","的這個","阿","啦","著","嗯"]
 
 if __name__ == "__main__":
     for word in words:
-        for i in range(1,2):
-            audio_path = "./recordingSpecAugment/{0}/{0}{1}.wav".format(word,i) #args.audio_path
-            # Step 0 : load audio file, extract mel spectrogram
+        for i in range(1,41):
+            audio_path = "./recordingSpecAugment/{0}/{0}{1}.wav".format(word,i)
+            
             audio, sampling_rate = librosa.load(audio_path,sr=16000)
             mel_spectrogram = librosa.feature.melspectrogram(y=audio,
                                                              sr=sampling_rate,
