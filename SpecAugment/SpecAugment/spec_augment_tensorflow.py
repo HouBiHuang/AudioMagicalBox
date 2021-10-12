@@ -1,40 +1,3 @@
-# Copyright 2019 RnD at Spoon Radio
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-"""SpecAugment Implementation for Tensorflow.
-Related paper : https://arxiv.org/pdf/1904.08779.pdf
-
-In this paper, show summarized parameters by each open datasets in Tabel 1.
------------------------------------------
-Policy | W  | F  | m_F |  T  |  p  | m_T
------------------------------------------
-None   |  0 |  0 |  -  |  0  |  -  |  -
------------------------------------------
-LB     | 80 | 27 |  1  | 100 | 1.0 | 1
------------------------------------------
-LD     | 80 | 27 |  2  | 100 | 1.0 | 2
------------------------------------------
-SM     | 40 | 15 |  2  |  70 | 0.2 | 2
------------------------------------------
-SS     | 40 | 27 |  2  |  70 | 0.2 | 2
------------------------------------------
-LB : LibriSpeech basic
-LD : LibriSpeech double
-SM : Switchboard mild
-SS : Switchboard strong
-"""
-
 import librosa
 import librosa.display
 import tensorflow as tf
@@ -166,9 +129,8 @@ def frequency_masking(mel_spectrogram, v, frequency_masking_para=50, frequency_m
     # Step 3 : frequency masking
     for i in range(frequency_mask_num):
         f = tf.random.uniform([], minval=0, maxval=frequency_masking_para, dtype=tf.int32)
-        print("f=" + str(f))
         f0 = tf.random.uniform([], minval=0, maxval=v-f, dtype=tf.int32)
-        print("f0=" + str(f0))
+
         # mel_spectrogram[:, t0:t0 + t] = 0
         mask = tf.concat((tf.ones(shape=(1, v-f0-f, n, 1)),
                           tf.zeros(shape=(1, f, n, 1)),

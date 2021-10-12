@@ -25,11 +25,11 @@ time_masking_para = args.frequency_mask_para
 frequency_masking_para = args.time_mask_para
 masking_line_number = args.masking_line_number
 
-words = ["ㄏㄧㄡ","ㄟ","他","好","你","吼","我","那","那那個","的","的一個","的那個","的這個","阿","啦","著","嗯"]#
+words = ["ㄏㄧㄡ","ㄟ","他","好","你","吼","我","那","那那個","的","的一個","的那個","的這個","阿","啦","著","嗯"]
 
 if __name__ == "__main__":
     for word in words:
-        for i in range(1,2):
+        for i in range(1,41):
             audio_path = "./recordingSpecAugment/{0}/{0}{1}.wav".format(word,i) #args.audio_path
             # Step 0 : load audio file, extract mel spectrogram
             audio, sampling_rate = librosa.load(audio_path,sr=16000)
@@ -42,8 +42,8 @@ if __name__ == "__main__":
             shape = mel_spectrogram.shape
             #mel_spectrogram = np.reshape(mel_spectrogram, (-1, shape[0], shape[1], 1))
             # Show Raw mel-spectrogram
-            spec_augment_tensorflow.visualization_spectrogram(mel_spectrogram=mel_spectrogram,
-                                                              title="Raw Mel Spectrogram")
+            #spec_augment_tensorflow.visualization_spectrogram(mel_spectrogram=mel_spectrogram,
+            #                                                  title="Raw Mel Spectrogram")
             
             for j in range(1,6):
                 
@@ -51,10 +51,10 @@ if __name__ == "__main__":
                 warped_masked_spectrogram = spec_augment_tensorflow.spec_augment(mel_spectrogram)
             
                 # Show time warped & masked spectrogram
-                spec_augment_tensorflow.visualization_tensor_spectrogram(mel_spectrogram=warped_masked_spectrogram,
-                                                                  title="tensorflow Warped & Masked Mel Spectrogram")
+                #spec_augment_tensorflow.visualization_tensor_spectrogram(mel_spectrogram=warped_masked_spectrogram,
+                #                                                  title="tensorflow Warped & Masked Mel Spectrogram")
                 
-                print(warped_masked_spectrogram.shape)
+                #print(warped_masked_spectrogram.shape)
                 
                 #warped_masked_spectrogram = np.reshape(warped_masked_spectrogram, (shape[0], shape[1]))
                 #print(warped_masked_spectrogram)
@@ -69,7 +69,7 @@ if __name__ == "__main__":
                 window[0:output_audio_len] = output_audio
                 
                 #Output wav
-                wavfile.write("./recordingSpecAugment/{0}/A{0}{1}-{2}.wav".format(word,i,j), 16000, window)    
+                wavfile.write("./recordingSpecAugment/{0}/warped_time_frequency_{0}{1}-{2}.wav".format(word,i,j), 16000, window)    
                 print("{0}-{1}-{2}".format(word,i,j))
                 
     
