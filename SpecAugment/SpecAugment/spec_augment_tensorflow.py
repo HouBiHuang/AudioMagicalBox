@@ -28,7 +28,7 @@ def sparse_warp(mel_spectrogram, time_warping_para=2):
     return mel_spectrogram
 
 
-def time_masking(mel_spectrogram, time_masking_para=3, time_mask_num=1):
+def time_masking(mel_spectrogram, time_masking_para=4, time_mask_num=1):
     # Step 2 : time masking
     fbank_size = tf.shape(mel_spectrogram)
     n, tau = fbank_size[1], fbank_size[2]
@@ -49,7 +49,7 @@ def time_masking(mel_spectrogram, time_masking_para=3, time_mask_num=1):
     return tf.cast(mel_spectrogram, dtype=tf.float32)
 
 
-def frequency_masking(mel_spectrogram, frequency_masking_para=50, frequency_mask_num=1):
+def frequency_masking(mel_spectrogram, frequency_masking_para=60, frequency_mask_num=1):
     fbank_size = tf.shape(mel_spectrogram)
     v, n = fbank_size[1], fbank_size[2]
 
@@ -97,7 +97,7 @@ def visualization_spectrogram(mel_spectrogram, title):
     S_dB = librosa.power_to_db(mel_spectrogram[:, :], ref=np.max)
     img = librosa.display.specshow(S_dB, x_axis='time',
                              y_axis='mel', sr=16000,
-                             fmax=16000, ax=ax)
+                             fmax=8000, ax=ax)
     fig.colorbar(img, ax=ax, format='%+2.0f dB')
     ax.set(title=title)
 
@@ -107,6 +107,6 @@ def visualization_tensor_spectrogram(mel_spectrogram, title):
     S_dB = librosa.power_to_db(mel_spectrogram[:, :], ref=np.max)
     img = librosa.display.specshow(S_dB, x_axis='time',
                              y_axis='mel', sr=16000,
-                             fmax=16000, ax=ax)
+                             fmax=8000, ax=ax)
     fig.colorbar(img, ax=ax, format='%+2.0f dB')
     ax.set(title=title)

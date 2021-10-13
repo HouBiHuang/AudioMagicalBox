@@ -16,11 +16,11 @@ if __name__ == "__main__":
             mel_spectrogram = librosa.feature.melspectrogram(y=audio,
                                                              sr=sampling_rate,
                                                              n_mels=256,
-                                                             fmax=16000)
+                                                             fmax=8000)
             
             # Show Raw mel-spectrogram
-            SpecAugment.spec_augment_tensorflow.visualization_spectrogram(mel_spectrogram=mel_spectrogram,
-                                                              title="Raw Mel Spectrogram")
+            #SpecAugment.spec_augment_tensorflow.visualization_spectrogram(mel_spectrogram=mel_spectrogram,
+            #                                                  title="Raw Mel Spectrogram")
             
             for j in range(1,6):
                 
@@ -28,8 +28,8 @@ if __name__ == "__main__":
                 warped_masked_spectrogram = SpecAugment.spec_augment_tensorflow.spec_augment(mel_spectrogram)
             
                 # Show time warped & masked spectrogram
-                SpecAugment.spec_augment_tensorflow.visualization_tensor_spectrogram(mel_spectrogram=warped_masked_spectrogram,
-                                                                  title="tensorflow Warped & Masked Mel Spectrogram")
+                #SpecAugment.spec_augment_tensorflow.visualization_tensor_spectrogram(mel_spectrogram=warped_masked_spectrogram,
+                #                                                  title="tensorflow Warped & Masked Mel Spectrogram")
                 
                 
                 #Change spectrogram to audio
