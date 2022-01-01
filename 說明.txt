@@ -1,0 +1,14 @@
+Part1_fbank.ipynb:把訓練音檔包成.npz檔，提取特徵方式為fbank。
+Part1_mfcc.ipynb:把訓練音檔包成.npz檔，提取特徵方式為mfcc。
+Part2.ipynb:訓練模型。
+TestModel_fbank.ipynb:測試模型，包含錄音檔測試、單詞測試，提取特徵方式為fbank。
+TestModel_mfcc.ipynb:測試模型，包含錄音檔測試、單詞測試，提取特徵方式為mfcc。
+h5ConvertToTflite.ipynb:將.h5檔轉成.tflite。
+RealTime.py:即時語音測試。
+specAugment.py:含音訊加噪、平移時間、改變音高、改變速度資料增強程式碼。
+spec_augment_test_TF.py:含時間扭曲、頻率遮罩、時間遮罩資料增強程式碼(需用到SpecAugment資料夾下的spec_augment_tensorflow.py)。
+------------------------------------------------------------------------------
+tflite_nomalize:將訓練出來的模型轉成.tflite。
+TestWAV:測試音檔。
+------------------------------------------------------------------------------
+recording.7z:訓練音檔。
