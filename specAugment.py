@@ -33,7 +33,6 @@ def shifting_time(data, sampling_rate = 16000, shift_max = 0.1, shift_direction 
 #改變音高
 def changing_pitch(data, sampling_rate = 16000):
     bins_per_octave = np.random.randint(-5,12)
-    #print(bins_per_octave)
     return librosa.effects.pitch_shift(data, sampling_rate, bins_per_octave)
 
 #改變速度

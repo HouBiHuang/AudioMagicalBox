@@ -18,11 +18,6 @@ words = ['backgroundNoise', 'ㄏㄧㄡ', 'ㄟ', '他', '你', '其他', '吼', '
 # Sliding window
 window = np.zeros(8000)#取樣音頻數據變數
 
-# GPIO 
-#GPIO.setwarnings(False)
-#GPIO.setmode(GPIO.BOARD)
-#GPIO.setup(8, GPIO.OUT, initial=GPIO.LOW)
-
 # Load model (interpreter)
 interpreter = tf.lite.Interpreter(model_path)
 interpreter.allocate_tensors()
